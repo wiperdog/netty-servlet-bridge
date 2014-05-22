@@ -1,0 +1,28 @@
+Netty Servlet Brigde
+=======================
+This software is the modification version of 'netty-servlet-brigde' open-source software project at :
+    https://github.com/bigpuritz/netty-servlet-bridge
+
+- Changelog:
+    + This software using for wiperdog (a database monitoring system - www.wiperdog.org ). Because the orignal version of netty-servlet-brigde do not
+      provide ability to adding/updating servlet instance at runtime ,so we need to change source code to do that , following are changes detail:
+      
+      - By default ,whe the server started , if new servlet is added or modified at runtime,the change will not affected because no change applied to servlet instance.
+      To make the change work fine ,need to initialize/re-initialize servlet  ,so we need to do some steps : 
+
+         1.Check if servlet handler contains a servlet which same as new servlet added then remove it
+         2.Adding servlet to servlet handler  : 
+
+                  WebappConfiguration#addHttpServlet(servletInstance,servletPath) )
+         3.Initialized servlet using ServletBridgeWebapp 
+
+                 ServletBridgeWebapp  webServlet = new ServletBridgeWebapp();
+                 webServlet.init(webapp, channel);
+      - To do above step , need to change something:
+          + Adding getter/setter for 'servlets' property in net.javaforge.netty.servlet.bridge.config.WebappConfiguration
+          + Update constructor visibility of "net.javaforge.netty.servlet.bridge.impl.ServletBridgeWebapp" to public
+
+    Now ,when new servlet is added or the existence is modified , servlet will be re-adding and initializing to serve for request
+
+
+
